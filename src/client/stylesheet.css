@@ -1,0 +1,49 @@
+.qotd {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.qotd-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.qotd-problem {
+    width: 600px;
+    margin: 20px auto;
+}
+
+.qotd-text {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.qotd-choices {
+    margin-left: 20px;
+}
+
+.qotd-choice {
+    display: block;
+}
+
+.qotd-submit {
+    margin-top: 20px;
+}
+.qotd-submitButton {
+    margin-right: 10px;
+}
+
+.fa--centered {
+    vertical-align: middle;
+}
+
+.fa--green {
+    color: #00ee76;
+}
+
+.fa--red {
+    color: red;
+}
+
+.fa--spacing {
+    margin-right: 5px;
+}
