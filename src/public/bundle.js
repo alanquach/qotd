@@ -205,6 +205,13 @@
 	        value: function renderSubmission() {
 	            if (this.state.currentProblemSubmitted) {
 	                var currentProblem = this.state.problems[this.state.currentProblemIndex];
+	                if (!this.state.submittedChoice) {
+	                    return _react2.default.createElement(
+	                        'span',
+	                        null,
+	                        'Please select a response.'
+	                    );
+	                }
 	                if (this.state.submittedChoice == currentProblem.answer) {
 	                    return _react2.default.createElement(
 	                        'span',

@@ -106,6 +106,11 @@ class App extends React.Component {
     renderSubmission() {
         if (this.state.currentProblemSubmitted) {
             var currentProblem = this.state.problems[this.state.currentProblemIndex];
+            if(!this.state.submittedChoice) {
+                return (
+                    <span>Please select a response.</span>
+                )
+            }
             if(this.state.submittedChoice == currentProblem.answer) {
                 return (
                     <span>
