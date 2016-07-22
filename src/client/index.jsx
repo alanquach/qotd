@@ -23,6 +23,7 @@ class App extends React.Component {
                 explanation: ""
             }],
             currentProblemIndex: 0,
+            multiProblemIndex: 0,
             currentProblemSubmitted: false,
             selectedChoice: null,
             submittedChoice: null,
@@ -81,29 +82,49 @@ class App extends React.Component {
     prevQuestion () {
         this.setState({
             currentProblemIndex: this.state.currentProblemIndex - 1,
-        })
+            multiProblemIndex: 0,
+        });
         this.clearSubmissionState();
     }
 
     nextQuestion () {
         this.setState({
-            currentProblemIndex: this.state.currentProblemIndex + 1
-        })
+            currentProblemIndex: this.state.currentProblemIndex + 1,
+            multiProblemIndex: 0
+        });
+        this.clearSubmissionState();
+    }
+
+    prevMultiQuestion () {
+        this.setState({
+            multiProblemIndex: this.state.multiProblemIndex - 1,
+        });
+        this.clearSubmissionState();
+    }
+
+    nextMultiQuestion () {
+        this.setState({
+            multiProblemIndex: this.state.multiProblemIndex + 1,
+        });
         this.clearSubmissionState();
     }
 
     prevDay () {
         this.setState({
-            time: this.state.time.subtract(1, 'days')
-        })
+            time: this.state.time.subtract(1, 'days'),
+            currentProblemIndex: 0,
+            multiProblemIndex: 0,
+        });
         this.clearSubmissionState();
         this.updateQuestion();
     }
 
     nextDay () {
         this.setState({
-            time: this.state.time.add(1, 'days')
-        })
+            time: this.state.time.add(1, 'days'),
+            currentProblemIndex: 0,
+            multiProblemIndex: 0,
+        });
         this.clearSubmissionState();
         this.updateQuestion();
     }
@@ -113,7 +134,7 @@ class App extends React.Component {
             selectedChoice: null,
             submittedChoice: null,
             seeExplanation: false,
-            currentProblemSubmitted: false  
+            currentProblemSubmitted: false,
         })
     }
 
@@ -124,11 +145,37 @@ class App extends React.Component {
                     <div>Question of the Day</div>
                     <div>{this.state.time.format("MMMM Do YYYY")}</div>
                 </h2>
+                {this.renderQuestionSelector()}
             </div>
         )
     }
 
     renderProblem () {
+        var currentProblem = this.state.problems[this.state.currentProblemIndex];
+        if (currentProblem.type == "multi") {
+            return (
+                <div className="qotd-multi">
+                    <table><tbody><tr>
+                        <td>
+                            <div className="qotd-multiproblem">
+                                <div className="qotd-big">
+                                    Background
+                                </div>
+                                {currentProblem.background.split('\\n').join('\n').split('\\t').join('\t')}
+                            </div>
+                        </td>
+                        <td>
+                            <div className="qotd-multiproblem">
+                                {this.renderMultiSelector()}
+                                {this.renderQuestion()}
+                                {this.renderChoicesAndSubmitButton()}
+                                {this.renderExplanation()}
+                            </div>
+                        </td>
+                    </tr></tbody></table>
+                </div>
+            )
+        }
         return (
             <div className="qotd-problem">
                 {this.renderQuestion()}
@@ -138,17 +185,13 @@ class App extends React.Component {
         )
     }
 
-    renderQuestionSelector() {
-        <FontAwesome
-            className="fa--spacing-right"
-            name="angle-double-left"
-            onClick={this.prevDay.bind(this)}
-        />
+    renderQuestionSelector () {
         var questionSelector;
+        var multiQuestionSelector;
         if (this.state.problems.length > 1) {
             questionSelector = (
                 <span>
-                    {this.state.problems.length > 1 && this.state.currentProblemIndex > 0 ?
+                    {this.state.currentProblemIndex > 0 ?
                         <FontAwesome
                             className="fa--spacing-right"
                             name="arrow-circle-left"
@@ -158,7 +201,7 @@ class App extends React.Component {
                         null
                     }
                     Question {this.state.currentProblemIndex + 1} of {this.state.problems.length}
-                    {this.state.problems.length > 1 && this.state.currentProblemIndex < this.state.problems.length - 1 ?
+                    {this.state.currentProblemIndex < this.state.problems.length - 1 ?
                         <FontAwesome
                             className="fa--spacing-left"
                             name="arrow-circle-right"
@@ -172,28 +215,65 @@ class App extends React.Component {
         }
         return (
             <div>
-                <FontAwesome
-                    className="fa--spacing-dbl-right"
-                    name="angle-double-left"
-                    onClick={this.prevDay.bind(this)}
-                />
-                {questionSelector}
-                <FontAwesome
-                    className="fa--spacing-dbl-left"
-                    name="angle-double-right"
-                    onClick={this.nextDay.bind(this)}
-                />
+                <div>
+                    <FontAwesome
+                        className="fa--spacing-dbl-right"
+                        name="angle-double-left"
+                        onClick={this.prevDay.bind(this)}
+                    />
+                    {questionSelector}
+                    <FontAwesome
+                        className="fa--spacing-dbl-left"
+                        name="angle-double-right"
+                        onClick={this.nextDay.bind(this)}
+                    />
+                </div>
             </div>
         )
 
     }
 
+    renderMultiSelector() {
+        var currentProblem = this.state.problems[this.state.currentProblemIndex];
+        if (currentProblem.type == "multi") {
+            return (
+                <div className="qotd-multiselector">
+                    {this.state.multiProblemIndex > 0 ?
+                        <FontAwesome
+                            className="fa--spacing-right"
+                            name="arrow-circle-left"
+                            onClick={this.prevMultiQuestion.bind(this)}
+                        />
+                        :
+                        null
+                    }
+                    Part {this.state.multiProblemIndex + 1} of {currentProblem.questions.length}
+                    {this.state.multiProblemIndex < currentProblem.questions.length - 1 ?
+                        <FontAwesome
+                            className="fa--spacing-left"
+                            name="arrow-circle-right"
+                            onClick={this.nextMultiQuestion.bind(this)}
+                        />
+                        :
+                        null
+                    }
+                </div>
+            )
+        }
+    }
     renderQuestion() {
         var currentProblem = this.state.problems[this.state.currentProblemIndex];
+        var currentQuestion;
+        if (currentProblem.type == "multi") {
+            currentQuestion = currentProblem.questions[this.state.multiProblemIndex].question;
+        } else {
+            currentQuestion = currentProblem.question;
+        }
         return (
-            <div className="qotd-text">
-                {this.renderQuestionSelector()}
-                {currentProblem.question}
+            <div>
+                <div className="qotd-text">
+                    {currentQuestion}
+                </div>
             </div>
         )
     }
@@ -201,6 +281,9 @@ class App extends React.Component {
     renderSubmission() {
         if (this.state.currentProblemSubmitted) {
             var currentProblem = this.state.problems[this.state.currentProblemIndex];
+            if (currentProblem.type == "multi") {
+                var currentProblem = currentProblem.questions[this.state.multiProblemIndex];
+            }
             if(!this.state.submittedChoice) {
                 return (
                     <span>Please select a response.</span>
@@ -233,6 +316,9 @@ class App extends React.Component {
 
     renderChoicesAndSubmitButton() {
         var currentProblem = this.state.problems[this.state.currentProblemIndex];
+        if (currentProblem.type == "multi") {
+            var currentProblem = currentProblem.questions[this.state.multiProblemIndex];
+        }
         var choiceLetters = ["a", "b", "c", "d"];
         return (
             <div className="qotd-choices">
@@ -256,6 +342,9 @@ class App extends React.Component {
     renderExplanation() {
         if (this.state.seeExplanation) {
             var currentProblem = this.state.problems[this.state.currentProblemIndex];
+            if (currentProblem.type == "multi") {
+                currentProblem = currentProblem.questions[this.state.multiProblemIndex];
+            }
             return (
                 <div className="qotd-text">
                     {currentProblem.explanation}
