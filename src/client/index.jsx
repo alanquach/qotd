@@ -26,13 +26,18 @@ class App extends React.Component {
             currentProblemSubmitted: false,
             selectedChoice: null,
             submittedChoice: null,
-            seeExplanation: false
+            seeExplanation: false,
+            time: moment()
         };
         this.state = this.initialState;
     }
 
     componentDidMount () {
-        fetch('/qotd').then(this.checkStatus).then(this.getJson).then(this.handleProblems.bind(this));
+        this.updateQuestion();
+    }
+
+    updateQuestion () {
+        fetch('/qotd?date=' + this.state.time.format('M-D-YY')).then(this.checkStatus).then(this.getJson).then(this.handleProblems.bind(this));
     }
 
     checkStatus (response) {
@@ -73,12 +78,51 @@ class App extends React.Component {
         });
     }
 
+    prevQuestion () {
+        this.setState({
+            currentProblemIndex: this.state.currentProblemIndex - 1,
+        })
+        this.clearSubmissionState();
+    }
+
+    nextQuestion () {
+        this.setState({
+            currentProblemIndex: this.state.currentProblemIndex + 1
+        })
+        this.clearSubmissionState();
+    }
+
+    prevDay () {
+        this.setState({
+            time: this.state.time.subtract(1, 'days')
+        })
+        this.clearSubmissionState();
+        this.updateQuestion();
+    }
+
+    nextDay () {
+        this.setState({
+            time: this.state.time.add(1, 'days')
+        })
+        this.clearSubmissionState();
+        this.updateQuestion();
+    }
+
+    clearSubmissionState () {
+        this.setState({
+            selectedChoice: null,
+            submittedChoice: null,
+            seeExplanation: false,
+            currentProblemSubmitted: false  
+        })
+    }
+
     renderHeader() {
         return (
             <div className="qotd-header">
                 <h2>
                     <div>Question of the Day</div>
-                    <div>{moment().format("MMMM Do YYYY")}</div>
+                    <div>{this.state.time.format("MMMM Do YYYY")}</div>
                 </h2>
             </div>
         )
@@ -94,10 +138,61 @@ class App extends React.Component {
         )
     }
 
+    renderQuestionSelector() {
+        <FontAwesome
+            className="fa--spacing-right"
+            name="angle-double-left"
+            onClick={this.prevDay.bind(this)}
+        />
+        var questionSelector;
+        if (this.state.problems.length > 1) {
+            questionSelector = (
+                <span>
+                    {this.state.problems.length > 1 && this.state.currentProblemIndex > 0 ?
+                        <FontAwesome
+                            className="fa--spacing-right"
+                            name="arrow-circle-left"
+                            onClick={this.prevQuestion.bind(this)}
+                        />
+                        :
+                        null
+                    }
+                    Question {this.state.currentProblemIndex + 1} of {this.state.problems.length}
+                    {this.state.problems.length > 1 && this.state.currentProblemIndex < this.state.problems.length - 1 ?
+                        <FontAwesome
+                            className="fa--spacing-left"
+                            name="arrow-circle-right"
+                            onClick={this.nextQuestion.bind(this)}
+                        />
+                        :
+                        null
+                    }
+                </span>
+            )
+        }
+        return (
+            <div>
+                <FontAwesome
+                    className="fa--spacing-dbl-right"
+                    name="angle-double-left"
+                    onClick={this.prevDay.bind(this)}
+                />
+                {questionSelector}
+                <FontAwesome
+                    className="fa--spacing-dbl-left"
+                    name="angle-double-right"
+                    onClick={this.nextDay.bind(this)}
+                />
+            </div>
+        )
+
+    }
+
     renderQuestion() {
         var currentProblem = this.state.problems[this.state.currentProblemIndex];
         return (
             <div className="qotd-text">
+                {this.renderQuestionSelector()}
                 {currentProblem.question}
             </div>
         )
@@ -115,7 +210,7 @@ class App extends React.Component {
                 return (
                     <span>
                         <FontAwesome
-                            className="fa--centered fa--green fa--spacing"
+                            className="fa--centered fa--green fa--spacing-right"
                             name="check-circle"
                             size="2x"
                         />
@@ -126,7 +221,7 @@ class App extends React.Component {
             return (
                 <span>
                     <FontAwesome
-                        className="fa--centered fa--red fa--spacing"
+                        className="fa--centered fa--red fa--spacing-right"
                         name="times-circle"
                         size="2x"
                     />

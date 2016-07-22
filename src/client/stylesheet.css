@@ -44,6 +44,18 @@
     color: red;
 }
 
-.fa--spacing {
+.fa--spacing-right {
     margin-right: 5px;
+}
+
+.fa--spacing-left {
+    margin-left: 5px;
+}
+
+.fa--spacing-dbl-right {
+    margin-right: 10px;
+}
+
+.fa--spacing-dbl-left {
+    margin-left: 10px;
 }
