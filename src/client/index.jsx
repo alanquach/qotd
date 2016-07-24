@@ -4,7 +4,7 @@ import moment from 'moment';
 import {RadioGroup, Radio} from 'react-radio-group';
 import { Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
-import './stylesheet.css';
+import './build/stylesheet.css';
 import 'whatwg-fetch';
 
 class App extends React.Component { 
@@ -145,7 +145,9 @@ class App extends React.Component {
                     <div>Question of the Day</div>
                     <div>{this.state.time.format("MMMM Do YYYY")}</div>
                 </h2>
-                {this.renderQuestionSelector()}
+                <div className="qotd-selector">
+                    {this.renderQuestionSelector()}
+                </div>
             </div>
         )
     }
@@ -154,25 +156,19 @@ class App extends React.Component {
         var currentProblem = this.state.problems[this.state.currentProblemIndex];
         if (currentProblem.type == "multi") {
             return (
-                <div className="qotd-multi">
-                    <table><tbody><tr>
-                        <td>
-                            <div className="qotd-multiproblem">
-                                <div className="qotd-big">
-                                    Background
-                                </div>
-                                {currentProblem.background.split('\\n').join('\n').split('\\t').join('\t')}
-                            </div>
-                        </td>
-                        <td>
-                            <div className="qotd-multiproblem">
-                                {this.renderMultiSelector()}
-                                {this.renderQuestion()}
-                                {this.renderChoicesAndSubmitButton()}
-                                {this.renderExplanation()}
-                            </div>
-                        </td>
-                    </tr></tbody></table>
+                <div className="qotd-multi u-flex u-flexRow u-flexNoWrap">
+                    <div className="qotd-multicolumn">
+                        <div className="qotd-big">
+                            Background
+                        </div>
+                        {currentProblem.background.split('\\n').join('\n').split('\\t').join('\t')}
+                    </div>
+                    <div className="qotd-multicolumn">
+                        {this.renderMultiSelector()}
+                        {this.renderQuestion()}
+                        {this.renderChoicesAndSubmitButton()}
+                        {this.renderExplanation()}
+                    </div>
                 </div>
             )
         }
@@ -215,19 +211,17 @@ class App extends React.Component {
         }
         return (
             <div>
-                <div>
-                    <FontAwesome
-                        className="fa--spacing-dbl-right"
-                        name="angle-double-left"
-                        onClick={this.prevDay.bind(this)}
-                    />
-                    {questionSelector}
-                    <FontAwesome
-                        className="fa--spacing-dbl-left"
-                        name="angle-double-right"
-                        onClick={this.nextDay.bind(this)}
-                    />
-                </div>
+                <FontAwesome
+                    className="fa--spacing-triple-right"
+                    name="angle-double-left"
+                    onClick={this.prevDay.bind(this)}
+                />
+                {questionSelector}
+                <FontAwesome
+                    className="fa--spacing-triple-left"
+                    name="angle-double-right"
+                    onClick={this.nextDay.bind(this)}
+                />
             </div>
         )
 
@@ -272,7 +266,7 @@ class App extends React.Component {
         return (
             <div>
                 <div className="qotd-text">
-                    {currentQuestion}
+                    {currentQuestion.split('\\n').join('\n').split('\\t').join('\t')}
                 </div>
             </div>
         )
@@ -347,7 +341,7 @@ class App extends React.Component {
             }
             return (
                 <div className="qotd-text">
-                    {currentProblem.explanation}
+                    {currentProblem.explanation.split('\\n').join('\n').split('\\t').join('\t')}
                 </div>
             )
         }

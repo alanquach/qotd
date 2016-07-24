@@ -1,17 +1,16 @@
+@import "suitcss";
+
+@custom-media --sm-viewport (min-width: 320px) and (max-width: 640px);
+@custom-media --md-viewport (min-width: 640px) and (max-width: 960px);
+@custom-media --lg-viewport (min-width: 960px);
+
 .qotd {
     font-family: 'Open Sans', sans-serif;
-}
-
-td {
-    vertical-align: top;
-}
-
-table {
-    border-collapse: separate;
-    border-spacing: 20px 0;
+    white-space: pre-wrap;
 }
 
 .qotd-header {
+    margin-top: 10px;
     text-align: center;
 }
 
@@ -20,23 +19,28 @@ table {
     margin: 20px auto;
 }
 
-.qotd-multiproblem {
-    width: 600px;
-}
 
+.qotd-selector {
+    margin-top: 5px;
+}
 .qotd-big {
+    font-weight: bold;
     font-size: 18px;
     margin-bottom: 10px;
 }
 
+.qotd-multicolumn{
+    width:49%;
+}
+
 .qotd-multi {
+    justify-content: space-between;
     width: 1200px;
     margin: 20px auto;
 }
 
 .qotd-text {
     margin-bottom: 20px;
-    white-space: pre-wrap;
 }
 
 .qotd-choices {
@@ -49,6 +53,7 @@ table {
 
 .qotd-submit {
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .qotd-submitButton {
@@ -84,10 +89,10 @@ table {
     margin-left: 5px;
 }
 
-.fa--spacing-dbl-right {
-    margin-right: 10px;
+.fa--spacing-triple-right {
+    margin-right: 15px;
 }
 
-.fa--spacing-dbl-left {
-    margin-left: 10px;
+.fa--spacing-triple-left {
+    margin-left: 15px;
 }

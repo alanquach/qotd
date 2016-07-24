@@ -7,8 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack-watch": "./node_modules/webpack/bin/webpack.js -w",
     "express-server": "node ./server",
-    "dev": "concurrently --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
-    "postinstall": "webpack -p --config ./webpack.config.js --progress"
+    "build-css": "./node_modules/suitcss-preprocessor/bin/suitcss -w src/client/stylesheet.css src/client/build/stylesheet.css",
+    "dev": "concurrently --kill-others \"npm run build-css\" \"npm run webpack-watch\" \"npm run express-server\"",
+    "postinstall": "./node_modules/suitcss-preprocessor/bin/suitcss src/client/stylesheet.css src/client/build/stylesheet.css && webpack -p --config ./webpack.config.js --progress"
   },
   "author": "",
   "license": "ISC",
@@ -29,6 +30,8 @@
     "react-fontawesome": "^1.1.0",
     "react-radio-group": "^3.0.1",
     "style-loader": "^0.13.1",
+    "suitcss": "^2.0.0",
+    "suitcss-preprocessor": "^2.0.0",
     "webpack": "^1.13.1",
     "whatwg-fetch": "^1.0.0"
   },
